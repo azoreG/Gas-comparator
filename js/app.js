@@ -14,7 +14,7 @@ function eventListeners() {
 
 async function readApi() {
   const result = await fetch(
-    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial`
+    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`
   );
 
   //Procede cuando la resupuesta este completa
@@ -33,6 +33,7 @@ function updateTable(params) {
                 <td>${sucursal.razonsocial}</td>
                 <td>${sucursal.regular}</td>
                 <td>${sucursal.premium}</td>
+                <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
                 </tr>
                 `;
       });
