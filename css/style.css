@@ -1,0 +1,26 @@
+body{
+    background-color: #e23e57;
+    padding: 50px;
+}
+
+.header{
+    font-family: 'Ubuntu', sans-serif;
+    text-align: center;
+    color: white;
+}
+
+.header h1{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.table-cointainer{
+    background-color: white;
+    margin: 30px auto;
+}
+
+.img-logo{
+    width: 80px;
+    height: 80px;
+    fill: white;
+}
