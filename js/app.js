@@ -51,7 +51,19 @@ function eventListeners() {
 
   //update city selector
   stateSelect.addEventListener("change",updateCitySelector);
+
+  //eventos botones
   document.getElementById("submit").addEventListener("click",filter)
+
+
+  document.getElementById("quitarfiltro").addEventListener("click",function (e) {
+    e.preventDefault();
+    document.getElementById("general").style.display = "block";
+    tableComparative.style.display = "none";
+    this.style.display = "none";
+  })
+
+
 }
 
 //Functions
@@ -188,6 +200,9 @@ function filter(e) {
 
     })
     .catch(err => console.log(err));
+       //esconde la tabla general y muestra quitar filtro
+       document.getElementById("general").style.display = "none";
+       document.getElementById("quitarfiltro").style.display = "block";
   } else {
     readApi(`https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?municipio=${citySelected}`)
     .then(res => {
@@ -243,6 +258,10 @@ function filter(e) {
       .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
+
+    //esconde la tabla general y muestra quitar filtro
+    document.getElementById("general").style.display = "none";
+    document.getElementById("quitarfiltro").style.display = "block";
   }
 
   

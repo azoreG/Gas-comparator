@@ -46,7 +46,11 @@
               </select>
           </div>
           <div class="input btnalign">
-            <button type="submit" id="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" id="submit" class="btn btn-primary">Filtrar</button>
+          </div>
+
+          <div class="input btnalign">
+            <button type="submit" id="quitarfiltro" class="btn btn-warning" style="display: none;">Quitar Filtro</button>
           </div>
         
       </form>
@@ -97,7 +101,7 @@
 </div> 
 </div>
 
-
+  <div id="general">
   <div class="table-cointainer" id="table-cointainer-general">
     <table class="table">
       <thead class="thead-dark">
@@ -113,6 +117,7 @@
       </tbody>
     </table>
 
+    
   </div>
 
 
@@ -129,7 +134,7 @@
       </li>
     </ul>
   </nav>
-
+</div>
 
   <!-- SCRIPTS BOOTSTRAP -->
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
