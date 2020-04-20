@@ -2,20 +2,58 @@
 const paginationNav = document.getElementById("pagination");
 let currentPage = 1;
 let pages = document.querySelectorAll(".optionParent");
+const estadosSelect = document.getElementById("inputState");
+const citySelect = document.getElementById("inputCity");
+const estados = [
+  "Ciudad de México",
+  "Aguascalientes",
+  "Baja California",
+  "Baja California Sur",
+  "Campeche",
+  "Coahuila de Zaragoza",
+  "Colima",
+  "Chiapas",
+  "Chihuahua",
+  "Durango",
+  "Guanajuato",
+  "Guerrero",
+  "Hidalgo",
+  "Jalisco",
+  "México",
+  "Michoacán de Ocampo",
+  "Morelos",
+  "Nayarit",
+  "Nuevo León",
+  "Oaxaca",
+  "Puebla",
+  "Querétaro",
+  "Quintana Roo",
+  "San Luis Potosí",
+  "Sinaloa",
+  "Sonora",
+  "Tabasco",
+  "Tamaulipas",
+  "Tlaxcala",
+  "Veracruz de Ignacio de la Llave",
+  "Yucatán",
+  "Zacatecas"
+];
+
 
 //Event Listeners
 eventListeners();
 function eventListeners() {
   document.addEventListener("DOMContentLoaded", updateTable);
   paginationNav.addEventListener("click", pagination);
+
+  //update city selector
+  estadosSelect.addEventListener("change",updateCitySelector);
 }
 
 //Functions
 
-async function readApi() {
-  const result = await fetch(
-    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`
-  );
+async function readApi(endpoint) {
+  const result = await fetch(endpoint);
 
   //Procede cuando la resupuesta este completa
   const datos = await result.json();
@@ -23,8 +61,19 @@ async function readApi() {
   return datos;
 }
 
-function updateTable(params) {
-  readApi()
+function updateTable() {
+
+  
+  let html = "<option selected>Choose...</option>"
+  estados.forEach(estado => {
+      html += `<option> ${estado} </option>`
+  });
+  estadosSelect.innerHTML = html;
+
+
+
+
+  readApi(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`)
     .then((e) => {
       let html = "";
       e.results.forEach((sucursal) => {
@@ -42,10 +91,37 @@ function updateTable(params) {
       table.innerHTML = html;
     })
     .catch((err) => console.error(err));
+}
+
+
+//Update City selector
+
+function updateCitySelector() {
+
+  const stateSelected = estadosSelect.options[estadosSelect.selectedIndex].value
+  let html =" <option selected>Choose...</option>"
+  fetch(`https://api-sepomex.hckdrk.mx/query/get_municipio_por_estado/${stateSelected}`)
+  .then(res => res.json())
+  .then(cities => {
+    cities.response.municipios.forEach(city => {
+      
+      html += `
+      <option>${city}</option>
+      `
+    });
+    citySelect.innerHTML = html;
+  })
+  .catch(err => console.log(err));
 
   
 }
 
+
+
+
+
+
+//Pagination
 function pagination(e) {
   e.preventDefault();
    
