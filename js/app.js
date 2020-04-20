@@ -1,13 +1,13 @@
 // Global Variables
+let currentPage = 1;
 const paginationNav = document.getElementById("pagination");
 const tableComparative = document.getElementById("table-comparative");
 const tableRegular = document.querySelector("#table-regular tbody");
 const tablePremium = document.querySelector("#table-premium tbody");
-let currentPage = 1;
 let pages = document.querySelectorAll(".optionParent");
 const stateSelect = document.getElementById("inputState");
 const citySelect = document.getElementById("inputCity");
-const estados = [
+const states = [
   "Ciudad de México",
   "Aguascalientes",
   "Baja California",
@@ -39,9 +39,8 @@ const estados = [
   "Tlaxcala",
   "Veracruz de Ignacio de la Llave",
   "Yucatán",
-  "Zacatecas"
+  "Zacatecas",
 ];
-
 
 //Event Listeners
 eventListeners();
@@ -50,24 +49,26 @@ function eventListeners() {
   paginationNav.addEventListener("click", pagination);
 
   //update city selector
-  stateSelect.addEventListener("change",updateCitySelector);
+  stateSelect.addEventListener("change", updateCitySelector);
 
-  //eventos botones
-  document.getElementById("submit").addEventListener("click",filter)
-
-
-  document.getElementById("quitarfiltro").addEventListener("click",function (e) {
-    e.preventDefault();
-    document.getElementById("general").style.display = "block";
-    tableComparative.style.display = "none";
-    this.style.display = "none";
-  })
+  //Filter button
+  document.getElementById("submit").addEventListener("click", filter);
 
 
+  document
+    .getElementById("quitarfiltro")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("general").style.display = "block";
+      tableComparative.style.display = "none";
+      this.style.display = "none";
+      citySelect.innerHTML = "<option selected>Choose...</option>";
+    });
 }
 
 //Functions
 
+// readapi function
 async function readApi(endpoint) {
   const result = await fetch(endpoint);
 
@@ -77,19 +78,17 @@ async function readApi(endpoint) {
   return datos;
 }
 
+//Update general table
 function updateTable() {
-
-  
-  let html = "<option selected>Choose...</option>"
-  estados.forEach(estado => {
-      html += `<option> ${estado} </option>`
+  let html = "<option selected>Choose...</option>";
+  states.forEach((estado) => {
+    html += `<option> ${estado} </option>`;
   });
   stateSelect.innerHTML = html;
 
-
-
-
-  readApi(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`)
+  readApi(
+    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`
+  )
     .then((e) => {
       let html = "";
       e.results.forEach((sucursal) => {
@@ -109,26 +108,22 @@ function updateTable() {
     .catch((err) => console.error(err));
 }
 
-
 //Update City selector
-
 function updateCitySelector() {
-
-  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value
-  let html =" <option selected>Choose...</option>"
-  readApi(`https://api-sepomex.hckdrk.mx/query/get_municipio_por_estado/${stateSelected}`)
-  .then(cities => {
-    cities.response.municipios.forEach(city => {
-      
-      html += `
+  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
+  let html = " <option selected>Choose...</option>";
+  readApi(
+    `https://api-sepomex.hckdrk.mx/query/get_municipio_por_estado/${stateSelected}`
+  )
+    .then((cities) => {
+      cities.response.municipios.forEach((city) => {
+        html += `
       <option>${city}</option>
-      `
-    });
-    citySelect.innerHTML = html;
-  })
-  .catch(err => console.log(err));
-
-  
+      `;
+      });
+      citySelect.innerHTML = html;
+    })
+    .catch((err) => console.log(err));
 }
 
 //FilterButton
@@ -136,31 +131,32 @@ function updateCitySelector() {
 function filter(e) {
   e.preventDefault();
   const gasSelect = document.getElementById("inputGas");
-  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value
-  const citySelected = citySelect.options[citySelect.selectedIndex].value
-  const gasSelected = gasSelect.options[gasSelect.selectedIndex].value
-  
+  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
+  const citySelected = citySelect.options[citySelect.selectedIndex].value;
+  const gasSelected = gasSelect.options[gasSelect.selectedIndex].value;
+
   //checo si esta seleccionada o no una ciudad, para ver si se busca por estado o por ciudad
-  if(citySelected === "Choose..." && stateSelected === "Choose..."){
+  if (citySelected === "Choose..." && stateSelected === "Choose...") {
     alert("Selecciona un estado o ciudad");
-  } 
-  else if (citySelected === "Choose...") {
-    readApi(`https://api-sepomex.hckdrk.mx/query/get_cp_por_estado/${stateSelected}`)
-    .then(res => {
-      const minCp = Math.min(...res.response.cp);
-      const maxCp = Math.max(...res.response.cp);
-      
-      tableComparative.style.display = "block";
-      
-     
-      //tabla mas baratas
-      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
-       .then(res => res.json())
-       .then( res => {
-        
-        let html = "";
-        res.results.forEach(sucursal => {
-          html += `
+  } else if (citySelected === "Choose...") {
+    readApi(
+      `https://api-sepomex.hckdrk.mx/query/get_cp_por_estado/${stateSelected}`
+    )
+      .then((res) => {
+        const minCp = Math.min(...res.response.cp);
+        const maxCp = Math.max(...res.response.cp);
+
+        tableComparative.style.display = "block";
+
+        //tabla mas baratas
+        fetch(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            let html = "";
+            res.results.forEach((sucursal) => {
+              html += `
           <tr>
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
@@ -168,22 +164,22 @@ function filter(e) {
           <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
           </tr>
           `;
-         })
+            });
 
-         tableRegular.innerHTML = html;
-        }
-       )
-      .catch(err => console.log(err));
+            tableRegular.innerHTML = html;
+          })
+          .catch((err) => console.log(err));
 
-      //tabla mas caras 
+        //tabla mas caras
 
-      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=-${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
-       .then(res => res.json())
-       .then( res => {
-        
-        let html = "";
-        res.results.forEach(sucursal => {
-          html += `
+        fetch(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=-${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            let html = "";
+            res.results.forEach((sucursal) => {
+              html += `
           <tr>
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
@@ -191,35 +187,35 @@ function filter(e) {
           <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
           </tr>
           `;
-         })
+            });
 
-         tablePremium.innerHTML = html;
-        }
-       )
-      .catch(err => console.log(err));
-
-    })
-    .catch(err => console.log(err));
-       //esconde la tabla general y muestra quitar filtro
-       document.getElementById("general").style.display = "none";
-       document.getElementById("quitarfiltro").style.display = "block";
+            tablePremium.innerHTML = html;
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+    //esconde la tabla general y muestra quitar filtro
+    document.getElementById("general").style.display = "none";
+    document.getElementById("quitarfiltro").style.display = "block";
   } else {
-    readApi(`https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?municipio=${citySelected}`)
-    .then(res => {
-      const minCp = Math.min(...res.response.cp);
-      const maxCp = Math.max(...res.response.cp);
-      
-      tableComparative.style.display = "block";
-      
-     
-      //tabla mas baratas
-      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
-       .then(res => res.json())
-       .then( res => {
-        
-        let html = "";
-        res.results.forEach(sucursal => {
-          html += `
+    readApi(
+      `https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?municipio=${citySelected}`
+    )
+      .then((res) => {
+        const minCp = Math.min(...res.response.cp);
+        const maxCp = Math.max(...res.response.cp);
+
+        tableComparative.style.display = "block";
+
+        //tabla mas baratas
+        fetch(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            let html = "";
+            res.results.forEach((sucursal) => {
+              html += `
           <tr>
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
@@ -227,22 +223,22 @@ function filter(e) {
           <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
           </tr>
           `;
-         })
+            });
 
-         tableRegular.innerHTML = html;
-        }
-       )
-      .catch(err => console.log(err));
+            tableRegular.innerHTML = html;
+          })
+          .catch((err) => console.log(err));
 
-      //tabla mas caras 
+        //tabla mas caras
 
-      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=-${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
-       .then(res => res.json())
-       .then( res => {
-        
-        let html = "";
-        res.results.forEach(sucursal => {
-          html += `
+        fetch(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=-${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`
+        )
+          .then((res) => res.json())
+          .then((res) => {
+            let html = "";
+            res.results.forEach((sucursal) => {
+              html += `
           <tr>
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
@@ -250,86 +246,81 @@ function filter(e) {
           <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
           </tr>
           `;
-         })
+            });
 
-         tablePremium.innerHTML = html;
-        }
-       )
-      .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
+            tablePremium.innerHTML = html;
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
 
     //esconde la tabla general y muestra quitar filtro
     document.getElementById("general").style.display = "none";
     document.getElementById("quitarfiltro").style.display = "block";
   }
-
-  
 }
-
-
-
-
 
 //Pagination
 function pagination(e) {
   e.preventDefault();
-   
-  
+
   //Botones intermedios;
   if (e.target.classList.contains("option")) {
-    currentPage= Number(e.target.innerHTML);
+    currentPage = Number(e.target.innerHTML);
     updateTable();
     updateSelection(e);
     console.log(currentPage);
   }
 
   //Next
-  if(e.target.id === "next"){
-    currentPage +=  1;
+  if (e.target.id === "next") {
+    currentPage += 1;
     updatePagination();
     updateTable();
     updateSelection(e);
-    
-    
   }
 
-  if(currentPage != 1){
-    document.getElementById("previous").parentElement.classList.remove("disabled");
-    if(e.target.id ==="previous"){
-        if(e.target.id !== "1"){
-            currentPage -=  1;
-            updatePagination();
-            updateTable();
-            updateSelection(e);
-        }
+  if (currentPage != 1) {
+    document
+      .getElementById("previous")
+      .parentElement.classList.remove("disabled");
+    if (e.target.id === "previous") {
+      if (e.target.id !== "1") {
+        currentPage -= 1;
+        updatePagination();
+        updateTable();
+        updateSelection(e);
       }
-} else{
- document.getElementById("previous").parentElement.classList.add("disabled");
-}
+    }
+  } else {
+    document.getElementById("previous").parentElement.classList.add("disabled");
+  }
   //Previous
- 
 }
 
 function updatePagination() {
-    if(currentPage > document.getElementById(3).innerHTML){
-        document.getElementById(1).innerHTML = Number(document.getElementById(1).innerHTML) + 1;
-        document.getElementById(2).innerHTML = Number(document.getElementById(2).innerHTML) + 1;
-        document.getElementById(3).innerHTML = Number(document.getElementById(3).innerHTML) + 1;
-    } else if(currentPage < document.getElementById(1).innerHTML){
-        document.getElementById(1).innerHTML = Number(document.getElementById(1).innerHTML) - 1;
-        document.getElementById(2).innerHTML = Number(document.getElementById(2).innerHTML) - 1;
-        document.getElementById(3).innerHTML = Number(document.getElementById(3).innerHTML) - 1;
-    }
+  if (currentPage > document.getElementById(3).innerHTML) {
+    document.getElementById(1).innerHTML =
+      Number(document.getElementById(1).innerHTML) + 1;
+    document.getElementById(2).innerHTML =
+      Number(document.getElementById(2).innerHTML) + 1;
+    document.getElementById(3).innerHTML =
+      Number(document.getElementById(3).innerHTML) + 1;
+  } else if (currentPage < document.getElementById(1).innerHTML) {
+    document.getElementById(1).innerHTML =
+      Number(document.getElementById(1).innerHTML) - 1;
+    document.getElementById(2).innerHTML =
+      Number(document.getElementById(2).innerHTML) - 1;
+    document.getElementById(3).innerHTML =
+      Number(document.getElementById(3).innerHTML) - 1;
+  }
 }
 
 function updateSelection(e) {
-    pages.forEach(element => {
-        element.classList.remove("active");
-        if(Number(element.firstElementChild.innerHTML) === currentPage){
-            element.classList.add("active");
-        }
-    });
-    
-    
+  pages.forEach((element) => {
+    element.classList.remove("active");
+    if (Number(element.firstElementChild.innerHTML) === currentPage) {
+      element.classList.add("active");
+    }
+  });
 }

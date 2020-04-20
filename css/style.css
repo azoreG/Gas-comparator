@@ -1,74 +1,70 @@
-body{
-    background-color: #e23e57;
-    padding: 40px;
+body {
+  background-color: #e23e57;
+  padding: 40px;
 }
 
-.header{
-    font-family: 'Ubuntu', sans-serif;
-    text-align: center;
-    color: white;
-
+.header {
+  font-family: "Ubuntu", sans-serif;
+  text-align: center;
+  color: white;
 }
-.logo{
-    display: flex;
-    justify-content: flex-end;
-}
-
-.header h1{
-    display: inline-block;
-    font-size: 30px;
-    margin-left: 10px;
+.logo {
+  display: flex;
+  justify-content: flex-end;
 }
 
-#table-cointainer-general{
-    background-color: white;
-    margin: 30px auto;
+.header h1 {
+  display: inline-block;
+  font-size: 30px;
+  margin-left: 10px;
 }
 
-#table-comparative{
-    display: none;
-    margin-top: 50px;
+#table-cointainer-general {
+  background-color: white;
+  margin: 30px auto;
 }
 
-#table-comparative p{
-   color: white;
-   background-color: #343a40;
-   text-align: center;
-   font-weight: bold;
+#table-comparative {
+  display: none;
+  margin-top: 50px;
 }
 
-#table-premium{
-    background-color: white;
-} 
-#table-regular{
-    background-color: white;
-} 
-
-
-#table-comparative p{
-    margin: 0;
+#table-comparative p {
+  color: white;
+  background-color: #343a40;
+  text-align: center;
+  font-weight: bold;
 }
 
-.img-logo{
-    width: 80px;
-    height: 80px;
-    fill: white;
+#table-premium {
+  background-color: white;
+}
+#table-regular {
+  background-color: white;
 }
 
-.filter{
-    
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    text-align: left;
-
-}
-.btnalign{
-    display: flex;
-    align-items: flex-end;
+#table-comparative p {
+  margin: 0;
 }
 
-.input{
-    display: inline-block;
-    margin-left: 10px;
+.img-logo {
+  width: 80px;
+  height: 80px;
+  fill: white;
+}
+
+.filter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  text-align: left;
+}
+.btnalign {
+  display: flex;
+  align-items: flex-end;
+}
+
+.input {
+  display: inline-block;
+  margin-left: 10px;
 }
