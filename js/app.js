@@ -140,8 +140,9 @@ function filter(e) {
       
       tableComparative.style.display = "block";
       console.log(minCp,maxCp,gasSelected)
-      //tabla regular
-      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&regular!=string()&regular!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
+     
+      //tabla mas baratas
+      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
        .then(res => res.json())
        .then( res => {
         
@@ -161,6 +162,30 @@ function filter(e) {
         }
        )
       .catch(err => console.log(err));
+
+      //tabla mas caras 
+
+      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=-${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
+       .then(res => res.json())
+       .then( res => {
+        
+        let html = "";
+        res.results.forEach(sucursal => {
+          html += `
+          <tr>
+          <td>${sucursal.razonsocial}</td>
+          <td>${sucursal.regular}</td>
+          <td>${sucursal.premium}</td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          </tr>
+          `;
+         })
+
+         tablePremium.innerHTML = html;
+        }
+       )
+      .catch(err => console.log(err));
+
     })
 
 
