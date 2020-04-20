@@ -1,6 +1,8 @@
 // Global Variables
 const paginationNav = document.getElementById("pagination");
 const tableComparative = document.getElementById("table-comparative");
+const tableRegular = document.querySelector("#table-regular tbody");
+const tablePremium = document.querySelector("#table-premium tbody");
 let currentPage = 1;
 let pages = document.querySelectorAll(".optionParent");
 const stateSelect = document.getElementById("inputState");
@@ -135,15 +137,41 @@ function filter(e) {
     .then(res => {
       const minCp = Math.min(...res.response.cp);
       const maxCp = Math.max(...res.response.cp);
+      
       tableComparative.style.display = "block";
       console.log(minCp,maxCp,gasSelected)
+      //tabla regular
+      fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&regular!=string()&regular!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
+       .then(res => res.json())
+       .then( res => {
+        
+        let html = "";
+        res.results.forEach(sucursal => {
+          html += `
+          <tr>
+          <td>${sucursal.razonsocial}</td>
+          <td>${sucursal.regular}</td>
+          <td>${sucursal.premium}</td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          </tr>
+          `;
+         })
+
+         tableRegular.innerHTML = html;
+        }
+       )
+      .catch(err => console.log(err));
     })
+
+
     .catch(err => console.log(err));
   } else {
     readApi(`https://api-sepomex.hckdrk.mx/query/get_cp_por_municipio/${citySelected}`)
     .then(res => {
       const minCp = Math.min(...res.response.cp);
       const maxCp = Math.max(...res.response.cp)
+      tableComparative.style.display = "block";
+
       console.log(minCp,maxCp,gasSelected)
     })
     .catch(err => console.log(err));
@@ -151,6 +179,7 @@ function filter(e) {
 
   
 }
+
 
 
 
