@@ -139,7 +139,7 @@ function filter(e) {
       const maxCp = Math.max(...res.response.cp);
       
       tableComparative.style.display = "block";
-      console.log(minCp,maxCp,gasSelected)
+      
      
       //tabla mas baratas
       fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
@@ -195,7 +195,7 @@ function filter(e) {
       const maxCp = Math.max(...res.response.cp);
       
       tableComparative.style.display = "block";
-      console.log(minCp,maxCp,gasSelected)
+      
      
       //tabla mas baratas
       fetch(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&sort=${gasSelected}&fields=regular,premium,razonsocial,latitude,longitude`)
@@ -271,7 +271,7 @@ function pagination(e) {
     updatePagination();
     updateTable();
     updateSelection(e);
-    console.log(currentPage);
+    
     
   }
 

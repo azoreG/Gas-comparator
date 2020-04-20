@@ -57,8 +57,10 @@
  <div id="table-comparative">
  <div class="row">
   <div class="col">
+    <p>Precio más bajo</p>
     <div class="table-cointainer">
       <table class="table" id="table-regular">
+       
         <thead class="thead-dark">
           <tr>
             <th scope="col">Sucursal</th>
@@ -68,12 +70,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>pruea</td>
-            <td>prueba</td>
-            <td>prueba</td>
-            <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
-            </tr>
         </tbody>
       </table>
   
@@ -81,6 +77,7 @@
   </div>
 
   <div class="col">
+    <p>Precio más alto</p>
     <div class="table-cointainer">
       <table class="table" id="table-premium">
         <thead class="thead-dark">
@@ -92,12 +89,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>pruea</td>
-            <td>prueba</td>
-            <td>prueba</td>
-            <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
-            </tr>
         </tbody>
       </table>
   
@@ -107,7 +98,7 @@
 </div>
 
 
-  <div class="table-cointainer">
+  <div class="table-cointainer" id="table-cointainer-general">
     <table class="table">
       <thead class="thead-dark">
         <tr>
