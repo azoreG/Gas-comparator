@@ -1,8 +1,9 @@
 // Global Variables
 const paginationNav = document.getElementById("pagination");
+const tableComparative = document.getElementById("table-comparative");
 let currentPage = 1;
 let pages = document.querySelectorAll(".optionParent");
-const estadosSelect = document.getElementById("inputState");
+const stateSelect = document.getElementById("inputState");
 const citySelect = document.getElementById("inputCity");
 const estados = [
   "Ciudad de México",
@@ -47,7 +48,8 @@ function eventListeners() {
   paginationNav.addEventListener("click", pagination);
 
   //update city selector
-  estadosSelect.addEventListener("change",updateCitySelector);
+  stateSelect.addEventListener("change",updateCitySelector);
+  document.getElementById("submit").addEventListener("click",filter)
 }
 
 //Functions
@@ -68,7 +70,7 @@ function updateTable() {
   estados.forEach(estado => {
       html += `<option> ${estado} </option>`
   });
-  estadosSelect.innerHTML = html;
+  stateSelect.innerHTML = html;
 
 
 
@@ -87,7 +89,7 @@ function updateTable() {
                 `;
       });
 
-      const table = document.querySelector(".table tbody");
+      const table = document.querySelector("#table-cointainer-body");
       table.innerHTML = html;
     })
     .catch((err) => console.error(err));
@@ -98,10 +100,9 @@ function updateTable() {
 
 function updateCitySelector() {
 
-  const stateSelected = estadosSelect.options[estadosSelect.selectedIndex].value
+  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value
   let html =" <option selected>Choose...</option>"
-  fetch(`https://api-sepomex.hckdrk.mx/query/get_municipio_por_estado/${stateSelected}`)
-  .then(res => res.json())
+  readApi(`https://api-sepomex.hckdrk.mx/query/get_municipio_por_estado/${stateSelected}`)
   .then(cities => {
     cities.response.municipios.forEach(city => {
       
@@ -116,7 +117,40 @@ function updateCitySelector() {
   
 }
 
+//FilterButton
 
+function filter(e) {
+  e.preventDefault();
+  const gasSelect = document.getElementById("inputGas");
+  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value
+  const citySelected = citySelect.options[citySelect.selectedIndex].value
+  const gasSelected = gasSelect.options[gasSelect.selectedIndex].value
+  
+  //checo si esta seleccionada o no una ciudad, para ver si se busca por estado o por ciudad
+  if(citySelected === "Choose..." && stateSelected === "Choose..."){
+    alert("Selecciona un estado o ciudad");
+  } 
+  else if (citySelected === "Choose...") {
+    readApi(`https://api-sepomex.hckdrk.mx/query/get_cp_por_estado/${stateSelected}`)
+    .then(res => {
+      const minCp = Math.min(...res.response.cp);
+      const maxCp = Math.max(...res.response.cp);
+      tableComparative.style.display = "block";
+      console.log(minCp,maxCp,gasSelected)
+    })
+    .catch(err => console.log(err));
+  } else {
+    readApi(`https://api-sepomex.hckdrk.mx/query/get_cp_por_municipio/${citySelected}`)
+    .then(res => {
+      const minCp = Math.min(...res.response.cp);
+      const maxCp = Math.max(...res.response.cp)
+      console.log(minCp,maxCp,gasSelected)
+    })
+    .catch(err => console.log(err));
+  }
+
+  
+}
 
 
 

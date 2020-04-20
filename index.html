@@ -26,25 +26,86 @@
       <form>
         
           <div class="input">
-              <label for="inputState">State</label>
+              <label for="inputState">Estado</label>
               <select id="inputState" class="form-control">
             
               </select>
           </div>
           <div class="input">
-            <label for="inputCity">City</label>
+            <label for="inputCity">Ciudad</label>
               <select id="inputCity" class="form-control">
                 <option selected>Choose...</option>
                 
               </select>
           </div>
+          <div class="input">
+            <label for="inputGas">Tipo</label>
+              <select id="inputGas" class="form-control">
+                <option selected>regular</option>
+                <option >premium</option>
+              </select>
+          </div>
           <div class="input btnalign">
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" id="submit" class="btn btn-primary">Filter</button>
           </div>
         
       </form>
     </div>
   </div>
+
+ <!-- col toma equitativamente el espacio -->
+ <div id="table-comparative">
+ <div class="row">
+  <div class="col">
+    <div class="table-cointainer">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sucursal</th>
+            <th scope="col">Regular</th>
+            <th scope="col">Premium</th>
+            <th scope="col">Ubicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>pruea</td>
+            <td>prueba</td>
+            <td>prueba</td>
+            <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+            </tr>
+        </tbody>
+      </table>
+  
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="table-cointainer">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Sucursal</th>
+            <th scope="col">Regular</th>
+            <th scope="col">Premium</th>
+            <th scope="col">Ubicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>pruea</td>
+            <td>prueba</td>
+            <td>prueba</td>
+            <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+            </tr>
+        </tbody>
+      </table>
+  
+    </div>
+  </div>
+</div> 
+</div>
+
 
   <div class="table-cointainer">
     <table class="table">
@@ -56,7 +117,7 @@
           <th scope="col">Ubicación</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="table-cointainer-body">
 
       </tbody>
     </table>
