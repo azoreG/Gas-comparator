@@ -80,7 +80,7 @@ async function readApi(endpoint) {
 }
 
 //Update general table
-function updateTable(endpoint) {
+function updateTable(endpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`) {
   let html = "<option selected>Choose...</option>";
   states.forEach((estado) => {
     html += `<option> ${estado} </option>`;
@@ -192,6 +192,7 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
+          updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle`)
       })
       .catch((err) => console.log(err));
     //muestra quitar filtro
