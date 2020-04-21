@@ -297,6 +297,8 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
+          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle`;
+          updateTable(currentEndpoint);
       })
       .catch((err) => console.log(err));
 
