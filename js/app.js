@@ -79,16 +79,14 @@ async function readApi(endpoint) {
 }
 
 //Update general table
-function updateTable() {
+function updateTable(endpoint) {
   let html = "<option selected>Choose...</option>";
   states.forEach((estado) => {
     html += `<option> ${estado} </option>`;
   });
   stateSelect.innerHTML = html;
 
-  readApi(
-    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`
-  )
+  readApi(endpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`)
     .then((e) => {
       let html = "";
       e.results.forEach((sucursal) => {
@@ -195,8 +193,7 @@ function filter(e) {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
-    //esconde la tabla general y muestra quitar filtro
-    document.getElementById("general").style.display = "none";
+    //muestra quitar filtro
     document.getElementById("quitarfiltro").style.display = "block";
   } else {
     readApi(
@@ -255,8 +252,7 @@ function filter(e) {
       })
       .catch((err) => console.log(err));
 
-    //esconde la tabla general y muestra quitar filtro
-    document.getElementById("general").style.display = "none";
+    //muestra quitar filtro
     document.getElementById("quitarfiltro").style.display = "block";
   }
 }
