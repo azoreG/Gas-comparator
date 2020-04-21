@@ -95,9 +95,9 @@ function updateTable() {
         html += `
                 <tr>
                 <td>${sucursal.razonsocial}</td>
-                <td>${sucursal.calle}</td>
                 <td>${sucursal.regular}</td>
                 <td>${sucursal.premium}</td>
+                <td>${sucursal.calle}</td>
                 <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
                 </tr>
                 `;
