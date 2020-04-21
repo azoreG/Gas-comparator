@@ -87,7 +87,7 @@ function updateTable() {
   stateSelect.innerHTML = html;
 
   readApi(
-    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude`
+    `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`
   )
     .then((e) => {
       let html = "";
@@ -95,6 +95,7 @@ function updateTable() {
         html += `
                 <tr>
                 <td>${sucursal.razonsocial}</td>
+                <td>${sucursal.calle}</td>
                 <td>${sucursal.regular}</td>
                 <td>${sucursal.premium}</td>
                 <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
