@@ -44,8 +44,9 @@ const states = [
 
 //Event Listeners
 eventListeners();
+updateTable();
 function eventListeners() {
-  document.addEventListener("DOMContentLoaded", updateTable);
+  
   paginationNav.addEventListener("click", pagination);
 
   //update city selector
@@ -86,7 +87,7 @@ function updateTable(endpoint) {
   });
   stateSelect.innerHTML = html;
 
-  readApi(endpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`)
+  readApi(endpoint)
     .then((e) => {
       let html = "";
       e.results.forEach((sucursal) => {
