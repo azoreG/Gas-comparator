@@ -1,5 +1,6 @@
 // Global Variables
 let currentPage = 1;
+let currentEndpoint = "";
 const paginationNav = document.getElementById("pagination");
 const tableComparative = document.getElementById("table-comparative");
 const tableRegular = document.querySelector("#table-regular tbody");
@@ -44,11 +45,11 @@ const states = [
 
 //Event Listeners
 eventListeners();
-updateTable();
 function eventListeners() {
   
   paginationNav.addEventListener("click", pagination);
 
+  document.addEventListener("DOMContentLoaded", initialize);
   //update city selector
   stateSelect.addEventListener("change", updateCitySelector);
 
@@ -64,6 +65,15 @@ function eventListeners() {
       tableComparative.style.display = "none";
       this.style.display = "none";
       citySelect.innerHTML = "<option selected>Choose...</option>";
+
+      //updata table
+      updateTable();
+      //update pagination 
+      currentPage = 1;
+      document.getElementById(1).innerHTML = 1
+      document.getElementById(2).innerHTML = 2
+      document.getElementById(3).innerHTML = 3
+      updateSelection();
     });
 }
 
@@ -78,16 +88,24 @@ async function readApi(endpoint) {
 
   return datos;
 }
-
-//Update general table
-function updateTable(endpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`) {
+function initialize(e) {
+  e.preventDefault();
   let html = "<option selected>Choose...</option>";
   states.forEach((estado) => {
     html += `<option> ${estado} </option>`;
   });
   stateSelect.innerHTML = html;
 
-  readApi(endpoint)
+  updateTable();
+}
+//Update general table
+function updateTable(endpoint) {
+ 
+  if(endpoint !== undefined) {
+    currentEndpoint = endpoint;
+  } else { currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`;}
+ 
+  readApi(currentEndpoint)
     .then((e) => {
       let html = "";
       e.results.forEach((sucursal) => {
@@ -130,6 +148,15 @@ function updateCitySelector() {
 
 function filter(e) {
   e.preventDefault();
+  //update pagination 
+  currentPage = 1;
+  document.getElementById(1).innerHTML = 1
+  document.getElementById(2).innerHTML = 2
+  document.getElementById(3).innerHTML = 3
+  updateSelection();
+  
+  
+  
   const gasSelect = document.getElementById("inputGas");
   const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
   const citySelected = citySelect.options[citySelect.selectedIndex].value;
@@ -192,7 +219,9 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
-          updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle`)
+          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle`;
+          updateTable(currentEndpoint);
+          
       })
       .catch((err) => console.log(err));
     //muestra quitar filtro
@@ -262,21 +291,24 @@ function filter(e) {
 //Pagination
 function pagination(e) {
   e.preventDefault();
-
+  
   //Botones intermedios;
   if (e.target.classList.contains("option")) {
     currentPage = Number(e.target.innerHTML);
-    updateTable();
-    updateSelection(e);
-    console.log(currentPage);
+    let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+    updateTable(endpoint);
+    updateSelection();
   }
 
   //Next
   if (e.target.id === "next") {
     currentPage += 1;
+   
+    let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+    updateTable(endpoint);
     updatePagination();
-    updateTable();
-    updateSelection(e);
+    updateSelection();
+    
   }
 
   if (currentPage != 1) {
@@ -287,8 +319,9 @@ function pagination(e) {
       if (e.target.id !== "1") {
         currentPage -= 1;
         updatePagination();
-        updateTable();
-        updateSelection(e);
+        let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+        updateTable(endpoint);
+        updateSelection();
       }
     }
   } else {
@@ -298,6 +331,7 @@ function pagination(e) {
 }
 
 function updatePagination() {
+  
   if (currentPage > document.getElementById(3).innerHTML) {
     document.getElementById(1).innerHTML =
       Number(document.getElementById(1).innerHTML) + 1;
@@ -313,9 +347,10 @@ function updatePagination() {
     document.getElementById(3).innerHTML =
       Number(document.getElementById(3).innerHTML) - 1;
   }
+
 }
 
-function updateSelection(e) {
+function updateSelection() {
   pages.forEach((element) => {
     element.classList.remove("active");
     if (Number(element.firstElementChild.innerHTML) === currentPage) {
