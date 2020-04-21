@@ -103,25 +103,42 @@ function updateTable(endpoint) {
  
   if(endpoint !== undefined) {
     currentEndpoint = endpoint;
-  } else { currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle`;}
+  } else { currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;}
  
   readApi(currentEndpoint)
     .then((e) => {
+      
       let html = "";
-      e.results.forEach((sucursal) => {
-        html += `
-                <tr>
+      const table = document.querySelector("#table-cointainer-body");
+      table.innerHTML = "";
+      document.getElementById("table-cointainer-general").style.display = "none";
+                document.getElementById("loading-table").style.display = "block";
+      e.results.forEach((sucursal,i) => {
+        getInfo(sucursal.codigopostal).then(res => {
+          let tr = document.createElement("tr");
+          html = `
+                
                 <td>${sucursal.razonsocial}</td>
                 <td>${sucursal.regular}</td>
                 <td>${sucursal.premium}</td>
                 <td>${sucursal.calle}</td>
+                <td>${res[0]}</td>
+                <td>${res[1]}</td>
                 <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
-                </tr>
+                
                 `;
+                tr.innerHTML = html;
+                table.appendChild(tr);
+                if(e.results.length - 1 === i){
+                document.getElementById("table-cointainer-general").style.display = "block";
+                document.getElementById("loading-table").style.display = "none";
+                }
+        } );
+        
       });
 
-      const table = document.querySelector("#table-cointainer-body");
-      table.innerHTML = html;
+      
+      
     })
     .catch((err) => console.error(err));
 }
@@ -219,7 +236,7 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
-          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle`;
+          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;
           updateTable(currentEndpoint);
           
       })
@@ -286,6 +303,19 @@ function filter(e) {
     //muestra quitar filtro
     document.getElementById("quitarfiltro").style.display = "block";
   }
+}
+
+
+// Get state and city
+async function getInfo(cp) {
+  let response = [];
+  await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`)
+  .then(res => res.json())
+  .then(res => {
+    response.push(res[0].response.estado);
+    response.push(res[0].response.ciudad);
+  });
+  return response;
 }
 
 //Pagination

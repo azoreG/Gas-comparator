@@ -68,3 +68,17 @@ body {
   display: inline-block;
   margin-left: 10px;
 }
+
+#loading{
+  background-color: white;
+  text-align: center;
+  margin: 0 auto;
+}
+
+#table-cointainer-general{
+  display: none;
+}
+
+#loading-table{
+  margin: 30px auto;
+}

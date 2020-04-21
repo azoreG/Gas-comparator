@@ -110,11 +110,13 @@
           <th scope="col">Regular</th>
           <th scope="col">Premium</th>
           <th scope="col">Dirección</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Ciudad</th>
           <th scope="col">Ubicación</th>
         </tr>
       </thead>
       <tbody id="table-cointainer-body">
-
+      
       </tbody>
     </table>
 
@@ -122,6 +124,25 @@
   </div>
 
 
+  <div id="loading-table">
+    <div class="table-cointainer">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Cargando</th>
+          </tr>
+        </thead>
+        <tbody id="table-cointainer-body">
+          <tr>
+            <td id="loading"><img style="width: 100px;" src="img/loading.gif" alt=""></td>
+            </tr>
+        </tbody>
+      </table>
+  
+      
+    </div>
+  </div>
+   
   <nav id="pagination" aria-label="Page navigation example">
     <ul class="pagination justify-content-end" id="tabs">
       <li class="page-item disabled">
@@ -135,7 +156,13 @@
       </li>
     </ul>
   </nav>
-</div>
+
+
+
+
+
+
+
 
   <!-- SCRIPTS BOOTSTRAP -->
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
