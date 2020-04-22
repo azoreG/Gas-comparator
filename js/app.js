@@ -8,6 +8,7 @@ const tablePremium = document.querySelector("#table-premium tbody");
 let pages = document.querySelectorAll(".optionParent");
 const stateSelect = document.getElementById("inputState");
 const citySelect = document.getElementById("inputCity");
+const neighborhoodSelect = document.getElementById("inputNeighborhood");
 const states = [
   "Ciudad de México",
   "Aguascalientes",
@@ -53,8 +54,13 @@ function eventListeners() {
   //update city selector
   stateSelect.addEventListener("change", updateCitySelector);
 
+
   //Filter button
   document.getElementById("submit").addEventListener("click", filter);
+
+  //Search button
+  document.getElementById("searchBtn").addEventListener("click", search);
+  
 
 
   document
@@ -74,6 +80,7 @@ function eventListeners() {
       document.getElementById(2).innerHTML = 2
       document.getElementById(3).innerHTML = 3
       updateSelection();
+      document.getElementById("search").style.display = "none"
     });
 }
 
@@ -162,6 +169,25 @@ function updateCitySelector() {
     .catch((err) => console.log(err));
 }
 
+
+//  update Neighborhood selector
+function updateNeighborhood() {
+  const citySelected = citySelect.options[citySelect.selectedIndex].value;
+  let html = " <option selected>Choose...</option>";
+  readApi(
+    `https://api-sepomex.hckdrk.mx/query/get_colonia_por_municipio/${citySelected}`
+  )
+    .then((neighborhoods) => {
+      neighborhoods.response.colonia.forEach((neighborhood) => {
+        html += `
+      <option>${neighborhood}</option>
+      `;
+      });
+      neighborhoodSelect.innerHTML = html;
+    })
+    .catch((err) => console.log(err));
+}
+
 //FilterButton
 
 function filter(e) {
@@ -172,7 +198,8 @@ function filter(e) {
   document.getElementById(2).innerHTML = 2
   document.getElementById(3).innerHTML = 3
   updateSelection();
-  
+  updateNeighborhood();
+  document.getElementById("search").style.display = "block"
   
   
   const gasSelect = document.getElementById("inputGas");
@@ -308,6 +335,14 @@ function filter(e) {
   }
 }
 
+// Search button
+
+function search(e) {
+  let name = encodeURI(document.getElementById("nameGasStation").value);
+  currentEndpoint += `&razonsocial=/${name}/i`
+  console.log(currentEndpoint);
+  updateTable(currentEndpoint);
+}
 
 // Get state and city
 async function getInfo(cpInput) {
