@@ -338,9 +338,9 @@ function filter(e) {
 // Search button
 
 function search(e) {
+  if()
   let name = encodeURI(document.getElementById("nameGasStation").value);
   currentEndpoint += `&razonsocial=/${name}/i`
-  console.log(currentEndpoint);
   updateTable(currentEndpoint);
 }
 
