@@ -47,21 +47,19 @@ const states = [
 //Event Listeners
 eventListeners();
 function eventListeners() {
-  
   paginationNav.addEventListener("click", pagination);
 
   document.addEventListener("DOMContentLoaded", initialize);
   //update city selector
   stateSelect.addEventListener("change", updateCitySelector);
 
-
   //Filter button
   document.getElementById("submit").addEventListener("click", filter);
 
   //Search button
-  document.getElementById("searchBtn").addEventListener("click", search);
-  
+  document.getElementById("searchBtn").addEventListener("click", search);3
 
+  
 
   document
     .getElementById("quitarfiltro")
@@ -74,13 +72,28 @@ function eventListeners() {
 
       //updata table
       updateTable();
-      //update pagination 
+      //update pagination
       currentPage = 1;
-      document.getElementById(1).innerHTML = 1
-      document.getElementById(2).innerHTML = 2
-      document.getElementById(3).innerHTML = 3
+      document.getElementById(1).innerHTML = 1;
+      document.getElementById(2).innerHTML = 2;
+      document.getElementById(3).innerHTML = 3;
       updateSelection();
-      document.getElementById("search").style.display = "none"
+      document.getElementById("search").style.display = "none";
+    });
+
+
+    document
+    .getElementById("quitarBusqueda")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      
+      //updata table
+      updateTable(currentEndpoint);
+      
+      document.getElementById("pagination").style.display = "block";
+      document.getElementById("quitarBusqueda").style.display = "none";
+      document.getElementById("searchBtn").style.display = "block";
+      
     });
 }
 
@@ -106,23 +119,43 @@ function initialize(e) {
   updateTable();
 }
 //Update general table
-function updateTable(endpoint) {
- 
-  if(endpoint !== undefined) {
+function updateTable(endpoint,updateCurrentEndpoint = true) {
+  if (endpoint !== undefined) {
+    
     currentEndpoint = endpoint;
-  } else { currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;}
- 
+    
+  } else {
+    currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;
+  }
+
   readApi(currentEndpoint)
     .then((e) => {
-      
       let html = "";
       const table = document.querySelector("#table-cointainer-body");
       table.innerHTML = "";
-      document.getElementById("table-cointainer-general").style.display = "none";
+      document.getElementById("table-cointainer-general").style.display =
+        "none";
       document.getElementById("loading-table").style.display = "block";
 
-      e.results.forEach((sucursal,i) => {
-        getInfo(sucursal.codigopostal).then(res => {
+      if(e.results.length === 0 ){
+        
+        document.getElementById("loading-table").innerHTML = 
+        `<div class="table-cointainer">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Error</th>
+            </tr>
+          </thead>
+          <tbody id="table-cointainer-body">
+            <tr>
+              <td id="loading"><p>No se encontraron resultados</p></td>
+              </tr>
+          </tbody>
+        </table>`
+      } else {
+      e.results.forEach((sucursal, i) => {
+        getInfo(sucursal.codigopostal).then((res) => {
           let tr = document.createElement("tr");
           html = `
                 
@@ -135,17 +168,15 @@ function updateTable(endpoint) {
                 <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
                 
                 `;
-                tr.innerHTML = html;
-                table.appendChild(tr);
-                if(e.results.length - 1 === i){
-                document.getElementById("table-cointainer-general").style.display = "block";
-                document.getElementById("loading-table").style.display = "none";
-                }
-        } );
-        
-      });
-
-      
+          tr.innerHTML = html;
+          table.appendChild(tr);
+          if (e.results.length - 1 === i) {
+            document.getElementById("table-cointainer-general").style.display =
+              "block";
+            document.getElementById("loading-table").style.display = "none";
+          }
+        });
+      })};
       
     })
     .catch((err) => console.error(err));
@@ -169,7 +200,6 @@ function updateCitySelector() {
     .catch((err) => console.log(err));
 }
 
-
 //  update Neighborhood selector
 function updateNeighborhood() {
   const citySelected = citySelect.options[citySelect.selectedIndex].value;
@@ -192,16 +222,15 @@ function updateNeighborhood() {
 
 function filter(e) {
   e.preventDefault();
-  //update pagination 
+  //update pagination
   currentPage = 1;
-  document.getElementById(1).innerHTML = 1
-  document.getElementById(2).innerHTML = 2
-  document.getElementById(3).innerHTML = 3
+  document.getElementById(1).innerHTML = 1;
+  document.getElementById(2).innerHTML = 2;
+  document.getElementById(3).innerHTML = 3;
   updateSelection();
   updateNeighborhood();
-  document.getElementById("search").style.display = "block"
-  
-  
+  document.getElementById("search").style.display = "block";
+
   const gasSelect = document.getElementById("inputGas");
   const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
   const citySelected = citySelect.options[citySelect.selectedIndex].value;
@@ -264,9 +293,8 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
-          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;
-          updateTable(currentEndpoint);
-          
+        currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal,colonia`;
+        updateTable(currentEndpoint);
       })
       .catch((err) => console.log(err));
     //muestra quitar filtro
@@ -325,8 +353,8 @@ function filter(e) {
             tablePremium.innerHTML = html;
           })
           .catch((err) => console.log(err));
-          currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle`;
-          updateTable(currentEndpoint);
+        currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=5&${gasSelected}!=string()&${gasSelected}!=string(0)&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia`;
+        updateTable(currentEndpoint);
       })
       .catch((err) => console.log(err));
 
@@ -338,31 +366,75 @@ function filter(e) {
 // Search button
 
 function search(e) {
-  if()
-  let name = encodeURI(document.getElementById("nameGasStation").value);
-  currentEndpoint += `&razonsocial=/${name}/i`
-  updateTable(currentEndpoint);
+
+  const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
+  const citySelected = citySelect.options[citySelect.selectedIndex].value;
+  const neighborhoodSelected =  neighborhoodSelect.options[neighborhoodSelect.selectedIndex].value;
+
+  let nameInput = document.getElementById("nameGasStation").value;
+
+  document.getElementById("pagination").style.display = "none";
+  document.getElementById("searchBtn").style.display = "none";
+  document.getElementById("quitarBusqueda").style.display = "inline-block";
+  
+  
+
+  if (neighborhoodSelect.value === "Choose..." && nameInput === "") {
+    alert("Ingresa un valor");
+  } else if (neighborhoodSelect.value === "Choose...") {
+    let endpoint = "";
+    endpoint = currentEndpoint + `&razonsocial=/${nameInput}/i`;
+    updateTable(endpoint);
+  } else if (nameInput === "" && neighborhoodSelect.value !== "Choose...") {
+    
+    readApi(
+      `https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?limit=10&municipio=${citySelected}&colonia=${neighborhoodSelected}`
+    )
+      .then((res) => {
+        const minCp = Math.min(...res.response.cp);
+        const maxCp = Math.max(...res.response.cp);
+
+        let colonia = neighborhoodSelected.split(" ");
+        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&colonia=/${colonia[0]}/i&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia`)
+      })
+      .catch(err => console.log(err));
+
+
+  } else {
+
+    readApi(
+      `https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?limit=10&municipio=${citySelected}&colonia=${neighborhoodSelected}`
+    )
+      .then((res) => {
+        const minCp = Math.min(...res.response.cp);
+        const maxCp = Math.max(...res.response.cp);
+
+        let colonia = neighborhoodSelected.split(" ");
+        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&razonsocial=/${nameInput}/i&colonia=/${colonia[0]}/i&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia`)
+      })
+      .catch(err => console.log(err));
+  }
 }
 
 // Get state and city
 async function getInfo(cpInput) {
   let cp;
   if (cpInput.length === 4) {
-    cp = `0${cpInput}`
+    cp = `0${cpInput}`;
   } else {
     cp = cpInput;
   }
 
   let response = [];
   await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`)
-  .then(res => res.json())
-  .then(res => {
-    if(res.error !== true){
-    response.push(res[0].response.estado);
-    response.push(res[0].response.municipio);
-    }
-  })
-  .catch(res => console.log(res));
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.error !== true) {
+        response.push(res[0].response.estado);
+        response.push(res[0].response.municipio);
+      }
+    })
+    .catch((res) => console.log(res));
 
   return response;
 }
@@ -370,11 +442,11 @@ async function getInfo(cpInput) {
 //Pagination
 function pagination(e) {
   e.preventDefault();
-  
+
   //Botones intermedios;
   if (e.target.classList.contains("option")) {
     currentPage = Number(e.target.innerHTML);
-    let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+    let endpoint = currentEndpoint.replace(/page=\d+/g, `page=${currentPage}`);
     updateTable(endpoint);
     updateSelection();
   }
@@ -382,12 +454,11 @@ function pagination(e) {
   //Next
   if (e.target.id === "next") {
     currentPage += 1;
-   
-    let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+
+    let endpoint = currentEndpoint.replace(/page=\d+/g, `page=${currentPage}`);
     updateTable(endpoint);
     updatePagination();
     updateSelection();
-    
   }
 
   if (currentPage != 1) {
@@ -398,7 +469,10 @@ function pagination(e) {
       if (e.target.id !== "1") {
         currentPage -= 1;
         updatePagination();
-        let endpoint = currentEndpoint.replace(/page=\d+/g,`page=${currentPage}`);
+        let endpoint = currentEndpoint.replace(
+          /page=\d+/g,
+          `page=${currentPage}`
+        );
         updateTable(endpoint);
         updateSelection();
       }
@@ -410,7 +484,6 @@ function pagination(e) {
 }
 
 function updatePagination() {
-  
   if (currentPage > document.getElementById(3).innerHTML) {
     document.getElementById(1).innerHTML =
       Number(document.getElementById(1).innerHTML) + 1;
@@ -426,7 +499,6 @@ function updatePagination() {
     document.getElementById(3).innerHTML =
       Number(document.getElementById(3).innerHTML) - 1;
   }
-
 }
 
 function updateSelection() {
