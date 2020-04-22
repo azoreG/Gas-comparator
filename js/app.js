@@ -93,6 +93,8 @@ function eventListeners() {
       document.getElementById("pagination").style.display = "block";
       document.getElementById("quitarBusqueda").style.display = "none";
       document.getElementById("searchBtn").style.display = "block";
+
+      document.getElementById("submit").click();
       
     });
 }
@@ -395,7 +397,7 @@ function search(e) {
         const maxCp = Math.max(...res.response.cp);
 
         let colonia = neighborhoodSelected.split(" ");
-        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&colonia=/${colonia[0]}/i&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia`)
+        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${colonia[0]}/i`)
       })
       .catch(err => console.log(err));
 
@@ -409,8 +411,7 @@ function search(e) {
         const minCp = Math.min(...res.response.cp);
         const maxCp = Math.max(...res.response.cp);
 
-        let colonia = neighborhoodSelected.split(" ");
-        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&razonsocial=/${nameInput}/i&colonia=/${colonia[0]}/i&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia`)
+        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${neighborhoodSelected}/i&razonsocial=/${nameInput}/i`)
       })
       .catch(err => console.log(err));
   }
