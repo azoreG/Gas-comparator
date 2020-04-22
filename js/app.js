@@ -112,7 +112,8 @@ function updateTable(endpoint) {
       const table = document.querySelector("#table-cointainer-body");
       table.innerHTML = "";
       document.getElementById("table-cointainer-general").style.display = "none";
-                document.getElementById("loading-table").style.display = "block";
+      document.getElementById("loading-table").style.display = "block";
+
       e.results.forEach((sucursal,i) => {
         getInfo(sucursal.codigopostal).then(res => {
           let tr = document.createElement("tr");
@@ -309,14 +310,25 @@ function filter(e) {
 
 
 // Get state and city
-async function getInfo(cp) {
+async function getInfo(cpInput) {
+  let cp;
+  if (cpInput.length === 4) {
+    cp = `0${cpInput}`
+  } else {
+    cp = cpInput;
+  }
+
   let response = [];
   await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`)
   .then(res => res.json())
   .then(res => {
+    if(res.error !== true){
     response.push(res[0].response.estado);
-    response.push(res[0].response.ciudad);
-  });
+    response.push(res[0].response.municipio);
+    }
+  })
+  .catch(res => console.log(res));
+
   return response;
 }
 
