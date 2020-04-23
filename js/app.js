@@ -57,9 +57,11 @@ function eventListeners() {
   document.getElementById("submit").addEventListener("click", filter);
 
   //Search button
-  document.getElementById("searchBtn").addEventListener("click", search);3
+  document.getElementById("searchBtn").addEventListener("click", search);
+  3;
 
-  
+  //Search nearby locations
+  document.getElementById("locationBtn").addEventListener("click", geoFindMe);
 
   document
     .getElementById("quitarfiltro")
@@ -81,21 +83,19 @@ function eventListeners() {
       document.getElementById("search").style.display = "none";
     });
 
-
-    document
+  document
     .getElementById("quitarBusqueda")
     .addEventListener("click", function (e) {
       e.preventDefault();
-      
+
       //updata table
       updateTable(currentEndpoint);
-      
+
       document.getElementById("pagination").style.display = "block";
       document.getElementById("quitarBusqueda").style.display = "none";
       document.getElementById("searchBtn").style.display = "block";
 
       document.getElementById("submit").click();
-      
     });
 }
 
@@ -121,11 +121,9 @@ function initialize(e) {
   updateTable();
 }
 //Update general table
-function updateTable(endpoint,updateCurrentEndpoint = true) {
+function updateTable(endpoint, updateCurrentEndpoint = true) {
   if (endpoint !== undefined) {
-    
     currentEndpoint = endpoint;
-    
   } else {
     currentEndpoint = `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=${currentPage}&pageSize=15&fields=regular,premium,razonsocial,latitude,longitude,calle,codigopostal`;
   }
@@ -139,10 +137,10 @@ function updateTable(endpoint,updateCurrentEndpoint = true) {
         "none";
       document.getElementById("loading-table").style.display = "block";
 
-      if(e.results.length === 0 ){
-        
-        document.getElementById("loading-table").innerHTML = 
-        `<div class="table-cointainer">
+      if (e.results.length === 0) {
+        document.getElementById(
+          "loading-table"
+        ).innerHTML = `<div class="table-cointainer">
         <table class="table">
           <thead class="thead-dark">
             <tr>
@@ -154,12 +152,12 @@ function updateTable(endpoint,updateCurrentEndpoint = true) {
               <td id="loading"><p>No se encontraron resultados</p></td>
               </tr>
           </tbody>
-        </table>`
+        </table>`;
       } else {
-      e.results.forEach((sucursal, i) => {
-        getInfo(sucursal.codigopostal).then((res) => {
-          let tr = document.createElement("tr");
-          html = `
+        e.results.forEach((sucursal, i) => {
+          getInfo(sucursal.codigopostal).then((res) => {
+            let tr = document.createElement("tr");
+            html = `
                 
                 <td>${sucursal.razonsocial}</td>
                 <td>${sucursal.regular}</td>
@@ -170,16 +168,17 @@ function updateTable(endpoint,updateCurrentEndpoint = true) {
                 <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
                 
                 `;
-          tr.innerHTML = html;
-          table.appendChild(tr);
-          if (e.results.length - 1 === i) {
-            document.getElementById("table-cointainer-general").style.display =
-              "block";
-            document.getElementById("loading-table").style.display = "none";
-          }
+            tr.innerHTML = html;
+            table.appendChild(tr);
+            if (e.results.length - 1 === i) {
+              document.getElementById(
+                "table-cointainer-general"
+              ).style.display = "block";
+              document.getElementById("loading-table").style.display = "none";
+            }
+          });
         });
-      })};
-      
+      }
     })
     .catch((err) => console.error(err));
 }
@@ -368,18 +367,16 @@ function filter(e) {
 // Search button
 
 function search(e) {
-
   const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
   const citySelected = citySelect.options[citySelect.selectedIndex].value;
-  const neighborhoodSelected =  neighborhoodSelect.options[neighborhoodSelect.selectedIndex].value;
+  const neighborhoodSelected =
+    neighborhoodSelect.options[neighborhoodSelect.selectedIndex].value;
 
   let nameInput = document.getElementById("nameGasStation").value;
 
   document.getElementById("pagination").style.display = "none";
   document.getElementById("searchBtn").style.display = "none";
   document.getElementById("quitarBusqueda").style.display = "inline-block";
-  
-  
 
   if (neighborhoodSelect.value === "Choose..." && nameInput === "") {
     alert("Ingresa un valor");
@@ -388,22 +385,18 @@ function search(e) {
     endpoint = currentEndpoint + `&razonsocial=/${nameInput}/i`;
     updateTable(endpoint);
   } else if (nameInput === "" && neighborhoodSelect.value !== "Choose...") {
-    
     readApi(
       `https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?limit=10&municipio=${citySelected}&colonia=${neighborhoodSelected}`
     )
       .then((res) => {
         const minCp = Math.min(...res.response.cp);
         const maxCp = Math.max(...res.response.cp);
-
-        let colonia = neighborhoodSelected.split(" ");
-        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${colonia[0]}/i`)
+        updateTable(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${neighborhoodSelected}/i`
+        );
       })
-      .catch(err => console.log(err));
-
-
+      .catch((err) => console.log(err));
   } else {
-
     readApi(
       `https://api-sepomex.hckdrk.mx/query/search_cp_advanced/${stateSelected}?limit=10&municipio=${citySelected}&colonia=${neighborhoodSelected}`
     )
@@ -411,9 +404,11 @@ function search(e) {
         const minCp = Math.min(...res.response.cp);
         const maxCp = Math.max(...res.response.cp);
 
-        updateTable(`https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${neighborhoodSelected}/i&razonsocial=/${nameInput}/i`)
+        updateTable(
+          `https://api.datos.gob.mx/v1/precio.gasolina.publico?page=1&pageSize=10&codigopostal%3E=string(${minCp})&codigopostal%3C=string(${maxCp})&fields=regular,premium,razonsocial,latitude,longitude,codigopostal,calle,colonia&colonia=/${neighborhoodSelected}/i&razonsocial=/${nameInput}/i`
+        );
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 }
 
@@ -509,4 +504,96 @@ function updateSelection() {
       element.classList.add("active");
     }
   });
+}
+
+//Finds your current position
+function geoFindMe() {
+  if (!navigator.geolocation) {
+    console.log("No es soportado por tu navegador");
+  } else {
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+
+  function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    searchNearbyLocations(latitude, longitude);
+  }
+
+  function error() {
+    console.log("error");
+    return "error";
+  }
+}
+
+//fetch nearby table
+function searchNearbyLocations(latitude, longitude) {
+  const nearbyLocationTable = document.getElementById("nearbyLocations");
+  document.getElementById("table-cointainer-general").style.display = "none";
+  paginationNav.style.display = "none";
+  document.getElementById("loading-table").style.display = "block";
+  
+  fetch(
+    "https://api.datos.gob.mx/v2/precio.gasolina.publico?page=1&pageSize=10018"
+  )
+    .then((res) => res.json())
+    .then((sucursales) => {
+      sucursales.results.forEach((sucursal) => {
+        sucursal.distance = getDistanceFromLatLonInKm(
+          latitude,
+          longitude,
+          sucursal.latitude,
+          sucursal.longitude
+        );
+      });
+      sucursales.results.sort(function (a, b) {
+        return a.distance - b.distance;
+      });
+      const sucursalesCercanas = sucursales.results.slice(0, 15);
+
+      sucursalesCercanas.forEach((sucursal,i) => {
+        getInfo(sucursal.codigopostal).then((res) => {
+          let tr = document.createElement("tr");
+          html = `
+              
+              <td>${sucursal.razonsocial}</td>
+              <td>${sucursal.regular}</td>
+              <td>${sucursal.premium}</td>
+              <td>${sucursal.calle}</td>
+              <td>${res[0]}</td>
+              <td>${res[1]}</td>
+              <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+              
+              `;
+          tr.innerHTML = html;
+          nearbyLocationTable.firstElementChild.appendChild(tr);
+          if (sucursalesCercanas.length - 1 === i) {
+            nearbyLocationTable.style.display = "block";
+            document.getElementById("loading-table").style.display = "none";
+          }
+          
+        });
+        
+          
+      });
+    });
+}
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
 }

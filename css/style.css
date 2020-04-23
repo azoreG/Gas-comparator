@@ -24,6 +24,11 @@ body {
   margin: 30px auto;
 }
 
+#nearbyLocations{
+  background-color: white;
+  margin: 30px auto;
+}
+
 #table-comparative {
   display: none;
   margin-top: 50px;
@@ -95,4 +100,19 @@ body {
   background-color: white;
   font-weight: bold;
   border-radius: 10px;
+}
+
+#location{
+  margin: 30px auto;
+}
+
+#location div{
+ display: flex;
+ justify-content: flex-end;
+}
+
+#locationBtn{
+  color: white;
+  font-weight: bold;
+  
 }
