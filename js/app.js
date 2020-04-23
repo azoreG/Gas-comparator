@@ -82,6 +82,7 @@ function eventListeners() {
       updateSelection();
       document.getElementById("search").style.display = "none";
       document.getElementById("locationBtn").style.display = "block";
+      stateSelect.options[0].selected="selected";
     });
 
   document
