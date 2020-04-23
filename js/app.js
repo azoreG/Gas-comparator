@@ -81,6 +81,19 @@ function eventListeners() {
       document.getElementById(3).innerHTML = 3;
       updateSelection();
       document.getElementById("search").style.display = "none";
+      document.getElementById("locationBtn").style.display = "block";
+    });
+
+  document
+    .getElementById("removeLocationBtn")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("removeLocationBtn").style.display = "none";
+      document.getElementById("locationBtn").style.display = "block";
+      document.getElementById("nearbyLocations").style.display = "none";
+      document.getElementById("table-cointainer-general").style.display =
+        "block";
+      document.getElementById("pagination").style.display = "block";
     });
 
   document
@@ -231,6 +244,9 @@ function filter(e) {
   updateSelection();
   updateNeighborhood();
   document.getElementById("search").style.display = "block";
+  document.getElementById("locationBtn").style.display = "none";
+  document.getElementById("removeLocationBtn").style.display = "none";
+  document.getElementById("nearbyLocations").style.display = "none";
 
   const gasSelect = document.getElementById("inputGas");
   const stateSelected = stateSelect.options[stateSelect.selectedIndex].value;
@@ -532,9 +548,10 @@ function searchNearbyLocations(latitude, longitude) {
   document.getElementById("table-cointainer-general").style.display = "none";
   paginationNav.style.display = "none";
   document.getElementById("loading-table").style.display = "block";
-  
+  document.getElementById("locationBtn").style.display = "none";
+
   fetch(
-    "https://api.datos.gob.mx/v2/precio.gasolina.publico?page=1&pageSize=10018"
+    "https://api.datos.gob.mx/v2/precio.gasolina.publico?page=1&pageSize=10018&regular!=string()"
   )
     .then((res) => res.json())
     .then((sucursales) => {
@@ -551,7 +568,7 @@ function searchNearbyLocations(latitude, longitude) {
       });
       const sucursalesCercanas = sucursales.results.slice(0, 15);
 
-      sucursalesCercanas.forEach((sucursal,i) => {
+      sucursalesCercanas.forEach((sucursal, i) => {
         getInfo(sucursal.codigopostal).then((res) => {
           let tr = document.createElement("tr");
           html = `
@@ -570,11 +587,10 @@ function searchNearbyLocations(latitude, longitude) {
           if (sucursalesCercanas.length - 1 === i) {
             nearbyLocationTable.style.display = "block";
             document.getElementById("loading-table").style.display = "none";
+            document.getElementById("removeLocationBtn").style.display =
+              "block";
           }
-          
         });
-        
-          
       });
     });
 }

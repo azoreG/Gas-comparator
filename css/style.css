@@ -24,7 +24,7 @@ body {
   margin: 30px auto;
 }
 
-#nearbyLocations{
+#nearbyLocations {
   background-color: white;
   margin: 30px auto;
 }
@@ -74,25 +74,25 @@ body {
   margin-left: 10px;
 }
 
-#loading{
+#loading {
   background-color: white;
   text-align: center;
   margin: 0 auto;
 }
 
-#table-cointainer-general{
+#table-cointainer-general {
   display: none;
 }
 
-#loading-table{
+#loading-table {
   margin: 30px auto;
 }
 
-.input{
+.input {
   max-width: 180px;
 }
 
-#search{
+#search {
   margin: 30px auto;
   display: none;
   padding: 30px;
@@ -102,17 +102,21 @@ body {
   border-radius: 10px;
 }
 
-#location{
+#location {
   margin: 30px auto;
 }
 
-#location div{
- display: flex;
- justify-content: flex-end;
+#location div {
+  display: flex;
+  justify-content: flex-end;
 }
 
-#locationBtn{
+#locationBtn {
   color: white;
   font-weight: bold;
-  
+}
+
+#removeLocationBtn {
+  color: white;
+  font-weight: bold;
 }
