@@ -3,6 +3,11 @@ body {
   padding: 40px;
 }
 
+#map {
+  height: 500px;
+  display: none;
+}
+
 .header {
   font-family: "Ubuntu", sans-serif;
   text-align: center;

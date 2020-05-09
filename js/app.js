@@ -1,3 +1,4 @@
+
 // Global Variables
 let currentPage = 1;
 let currentEndpoint = "";
@@ -44,6 +45,8 @@ const states = [
   "Zacatecas",
 ];
 
+
+
 //Event Listeners
 eventListeners();
 function eventListeners() {
@@ -89,6 +92,7 @@ function eventListeners() {
     .getElementById("removeLocationBtn")
     .addEventListener("click", function (e) {
       e.preventDefault();
+      document.getElementById("map").style.display= "none"
       document.getElementById("removeLocationBtn").style.display = "none";
       document.getElementById("locationBtn").style.display = "block";
       document.getElementById("nearbyLocations").style.display = "none";
@@ -440,14 +444,19 @@ async function getInfo(cpInput) {
 
   let response = [];
   await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`)
-    .then((res) => res.json())
+    .then((res) => {if(res.status === 200){
+      return res.json();
+    }})
     .then((res) => {
       if (res.error !== true) {
         response.push(res[0].response.estado);
         response.push(res[0].response.municipio);
       }
+      else{
+        throw new Error(res.err);
+      }
     })
-    .catch((res) => console.log(res));
+    .catch((err) => console.log(err));
 
   return response;
 }
@@ -525,6 +534,7 @@ function updateSelection() {
 
 //Finds your current position
 function geoFindMe() {
+ 
   if (!navigator.geolocation) {
     console.log("No es soportado por tu navegador");
   } else {
@@ -556,6 +566,8 @@ function searchNearbyLocations(latitude, longitude) {
   )
     .then((res) => res.json())
     .then((sucursales) => {
+      
+      
       sucursales.results.forEach((sucursal) => {
         sucursal.distance = getDistanceFromLatLonInKm(
           latitude,
@@ -567,7 +579,8 @@ function searchNearbyLocations(latitude, longitude) {
       sucursales.results.sort(function (a, b) {
         return a.distance - b.distance;
       });
-      const sucursalesCercanas = sucursales.results.slice(0, 15);
+      const sucursalesCercanas = sucursales.results.slice(0, 10);
+      
 
       sucursalesCercanas.forEach((sucursal, i) => {
         getInfo(sucursal.codigopostal).then((res) => {
@@ -588,6 +601,9 @@ function searchNearbyLocations(latitude, longitude) {
           if (sucursalesCercanas.length - 1 === i) {
             nearbyLocationTable.style.display = "block";
             document.getElementById("loading-table").style.display = "none";
+            document.getElementById("map").style.display= "block"
+            const ui = new UI();
+            ui.mostrarPines(sucursalesCercanas,latitude,longitude);
             document.getElementById("removeLocationBtn").style.display =
               "block";
           }

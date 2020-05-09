@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gas Comparator</title>
 
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@1,700&display=swap" rel="stylesheet">
   <!-- CSS -->
@@ -26,20 +28,20 @@
       <form>
         
           <div class="input">
-              <label for="inputState">Estado</label>
+              <label for="inputState">State</label>
               <select id="inputState" class="form-control">
             
               </select>
           </div>
           <div class="input">
-            <label for="inputCity">Ciudad (Opcional)</label>
+            <label for="inputCity">City (Optional)</label>
               <select id="inputCity" class="form-control">
                 <option selected>Choose...</option>
                 
               </select>
           </div>
           <div class="input">
-            <label for="inputGas">Tipo</label>
+            <label for="inputGas">Gas Type</label>
               <select id="inputGas" class="form-control">
                 <option selected>regular</option>
                 <option >premium</option>
@@ -50,7 +52,7 @@
           </div>
 
           <div class="input btnalign">
-            <button type="submit" id="quitarfiltro" class="btn btn-warning" style="display: none;">Quitar Filtro</button>
+            <button type="submit" id="quitarfiltro" class="btn btn-warning" style="display: none;">X</button>
           </div>
         
       </form>
@@ -61,16 +63,16 @@
  <div id="table-comparative">
  <div class="row">
   <div class="col">
-    <p>Precio más bajo</p>
+    <p>Lowest price</p>
     <div class="table-cointainer">
       <table class="table" id="table-regular">
        
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Sucursal</th>
+            <th scope="col">Name</th>
             <th scope="col">Regular</th>
             <th scope="col">Premium</th>
-            <th scope="col">Ubicación</th>
+            <th scope="col">Location</th>
           </tr>
         </thead>
         <tbody>
@@ -81,15 +83,15 @@
   </div>
 
   <div class="col">
-    <p>Precio más alto</p>
+    <p>Highest price</p>
     <div class="table-cointainer">
       <table class="table" id="table-premium">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Sucursal</th>
+            <th scope="col">Name</th>
             <th scope="col">Regular</th>
             <th scope="col">Premium</th>
-            <th scope="col">Ubicación</th>
+            <th scope="col">Location</th>
           </tr>
         </thead>
         <tbody>
@@ -106,24 +108,24 @@
         
       
       <div class="input">
-        <label for="inputNeighborhood">Colonia (Opcional)</label>
+        <label for="inputNeighborhood">Neighborhood (Optional)</label>
           <select id="inputNeighborhood" class="form-control">
             <option selected>Choose...</option>
             
           </select>
         </div>
         <div class="input">
-            <label for="nameGasStation">Razon Social (Opcional)</label>
+            <label for="nameGasStation">Name (Optional)</label>
             <input type="text" id="nameGasStation" class="form-control" placeholder="Nombre">
           </div>
           
      
     
       <div class="input btnalign">
-        <button type="submit" id="searchBtn" class="btn btn-primary">Buscar</button>
+        <button type="submit" id="searchBtn" class="btn btn-primary">Search</button>
       </div>
       <div class="input btnalign"></div>
-      <button type="submit" id="quitarBusqueda" class="btn btn-warning" style="display: none;">Quitar Filtro</button>
+      <button type="submit" id="quitarBusqueda" class="btn btn-warning" style="display: none;">X</button>
       </div>
 
       
@@ -131,11 +133,11 @@
 
   <div id="location">
     <div>
-      <button type="submit" id="locationBtn" class="btn btn-warning">Buscar Sucursales Cercanas</button>
+      <button type="submit" id="locationBtn" class="btn btn-warning">Find Nearby Gas Stations</button>
     </div>
 
     <div>
-      <button type="submit" id="removeLocationBtn" class="btn btn-primary" style="display: none;">Regresar</button>
+      <button type="submit" id="removeLocationBtn" class="btn btn-primary" style="display: none;">Return</button>
     </div>
   
   </div>
@@ -145,13 +147,13 @@
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">Sucursal</th>
+          <th scope="col">Name</th>
           <th scope="col">Regular</th>
           <th scope="col">Premium</th>
-          <th scope="col">Dirección</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Ciudad</th>
-          <th scope="col">Ubicación</th>
+          <th scope="col">Address</th>
+          <th scope="col">State</th>
+          <th scope="col">City</th>
+          <th scope="col">Location</th>
         </tr>
       </thead>
       <tbody id="table-cointainer-body">
@@ -161,19 +163,20 @@
   </div>
 </div>
 
-
+<!-- Map -->
+<div id="map"></div>
 
   <div class="table-cointainer" id="nearbyLocations" style="display: none;">
     <table class="table">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">Sucursal</th>
+          <th scope="col">Name</th>
           <th scope="col">Regular</th>
           <th scope="col">Premium</th>
-          <th scope="col">Dirección</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Ciudad</th>
-          <th scope="col">Ubicación</th>
+          <th scope="col">Address</th>
+          <th scope="col">State</th>
+          <th scope="col">City</th>
+          <th scope="col">Location</th>
         </tr>
       </thead>
       <tbody id="table-cointainer-body">
@@ -194,7 +197,7 @@
       <table class="table">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Cargando</th>
+            <th scope="col">Loading</th>
           </tr>
         </thead>
         <tbody id="table-cointainer-body">
@@ -222,14 +225,14 @@
     </ul>
   </nav>
 
-
-
+ 
 
 
 
 
 
   <!-- SCRIPTS BOOTSTRAP -->
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
     integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
     crossorigin="anonymous"></script>
@@ -239,6 +242,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
+  <script src="js/map.js"></script>
   <script src="js/app.js"></script>
 </body>
 
