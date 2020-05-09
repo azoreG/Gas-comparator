@@ -183,7 +183,7 @@ function updateTable(endpoint, updateCurrentEndpoint = true) {
                 <td>${sucursal.calle}</td>
                 <td>${res[0]}</td>
                 <td>${res[1]}</td>
-                <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+                <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
                 
                 `;
             tr.innerHTML = html;
@@ -284,7 +284,7 @@ function filter(e) {
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
           <td>${sucursal.premium}</td>
-          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
           </tr>
           `;
             });
@@ -307,7 +307,7 @@ function filter(e) {
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
           <td>${sucursal.premium}</td>
-          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
           </tr>
           `;
             });
@@ -344,7 +344,7 @@ function filter(e) {
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
           <td>${sucursal.premium}</td>
-          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
           </tr>
           `;
             });
@@ -367,7 +367,7 @@ function filter(e) {
           <td>${sucursal.razonsocial}</td>
           <td>${sucursal.regular}</td>
           <td>${sucursal.premium}</td>
-          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+          <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
           </tr>
           `;
             });
@@ -443,7 +443,7 @@ async function getInfo(cpInput) {
   }
 
   let response = [];
-  await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`)
+  await fetch(`https://api-sepomex.hckdrk.mx/query/info_cp/${cp}`, { mode: 'cors' })
     .then((res) => {if(res.status === 200){
       return res.json();
     }})
@@ -593,7 +593,7 @@ function searchNearbyLocations(latitude, longitude) {
               <td>${sucursal.calle}</td>
               <td>${res[0]}</td>
               <td>${res[1]}</td>
-              <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">Ver ubicación</a></td>
+              <td><a target=”_blank” href="https://maps.google.com/?q=${sucursal.latitude},${sucursal.longitude}">See location</a></td>
               
               `;
           tr.innerHTML = html;
